@@ -20,6 +20,7 @@ export default class ComponentsBuilder {
                 ch: ' ',
                 inverse: true
             },
+            // habilita colocar cores e tags no texto
             tags: true
         }
     }
@@ -29,16 +30,17 @@ export default class ComponentsBuilder {
             smartCSR: true,
             title
         })
-        
+
         this.#screen.key(['escape', 'q', 'C-c'], () => process.exit(0))
+
         return this
     }
 
     setLayoutComponent() {
-        this.#layout = blessed.layout({
-           parent: this.#screen,
-           width: '100%',
-           height: '100%',
+        this.#layout = blessed.layout({ 
+            parent: this.#screen,
+            width: '100%',
+            height: '100%',
         })
 
         return this
@@ -64,6 +66,7 @@ export default class ComponentsBuilder {
         this.#input = input
 
         return this
+
     }
 
     setChatComponent() {
@@ -73,19 +76,18 @@ export default class ComponentsBuilder {
             align: 'left',
             width: '50%',
             height: '90%',
-            items: ['{bold}Messenger{/}']
+            items: ['{bold}Messenger{/}' ]
         })
 
         return this
     }
-    
     setStatusComponent() {
         this.#status = blessed.list({
             ...this.#baseComponent(),
             parent: this.#layout,
             width: '25%',
             height: '90%',
-            items: ['{bold}Users on Room{/}']
+            items: ['{bold}Users on Room{/}' ]
         })
         return this
     }
@@ -99,7 +101,7 @@ export default class ComponentsBuilder {
             style: {
                 fg: 'yellow'
             },
-            items: ['{bold}Activity Log{/}']
+            items: ['{bold}Activity Log{/}' ]
         })
         return this
     }
@@ -116,3 +118,4 @@ export default class ComponentsBuilder {
         return components
     }
 }
+

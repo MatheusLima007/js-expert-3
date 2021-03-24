@@ -1,17 +1,20 @@
 import ComponentsBuilder from "./components.js"
 import { constants } from "./constants.js"
 
+
 export default class TerminalController {
     #usersCollors = new Map()
 
-    constructor() {}
+    constructor() { }
+
 
     #pickCollor() {
         return `#${((1 << 24) * Math.random() | 0).toString(16)}-fg`
     }
 
     #getUserCollor(userName) {
-        if(this.#usersCollors.has(userName)) return this.#usersCollors.get(userName)
+        if (this.#usersCollors.has(userName))
+            return this.#usersCollors.get(userName)
 
         const collor = this.#pickCollor()
         this.#usersCollors.set(userName, collor)
@@ -19,8 +22,8 @@ export default class TerminalController {
         return collor
     }
 
-    #onInputReceived(eventEmiter) {
-        return function() {
+    #onInputReceived(eventEmitter) {
+        return function () {
             const message = this.getValue()
             console.log(message)
             this.clearValue()
@@ -39,18 +42,24 @@ export default class TerminalController {
     }
 
     #onLogChanged({ screen, activityLog }) {
+
         return msg => {
+            // erickwendel left
+            // erickwendel join
+
             const [userName] = msg.split(/\s/)
             const collor = this.#getUserCollor(userName)
-
             activityLog.addItem(`{${collor}}{bold}${msg.toString()}{/}`)
 
             screen.render()
         }
     }
-
     #onStatusChanged({ screen, status }) {
+
+        // [ 'erickwendel', 'mariazinha']
         return users => {
+
+            // vamos pegar o primeiro elemento da lista
             const { content } = status.items.shift()
             status.clearItems()
             status.addItem(content)
@@ -58,42 +67,30 @@ export default class TerminalController {
             users.forEach(userName => {
                 const collor = this.#getUserCollor(userName)
                 status.addItem(`{${collor}}{bold}${userName}{/}`)
-            });
+            })
 
             screen.render()
         }
     }
+    #registerEvents(eventEmitter, components) {
+        eventEmitter.on(constants.events.app.MESSAGE_RECEIVED, this.#onMessageReceived(components))
+        eventEmitter.on(constants.events.app.ACTIVITYLOG_UPDATED, this.#onLogChanged(components))
+        eventEmitter.on(constants.events.app.STATUS_UPDATED, this.#onStatusChanged(components))
 
-    #registerEvents(eventEmiter, components) {
-        eventEmiter.on(constants.events.app.MESSAGE_RECEIVED, this.#onMessageReceived(components))
-        eventEmiter.on(constants.events.app.ACTIVITYLOG_UPDATED, this.#onLogChanged(components))
-        eventEmiter.on(constants.events.app.STATUS_UPDATED, this.#onStatusChanged(components))
     }
-
-    async initializeTable(eventEmiter) {
+    async initializeTable(eventEmitter) {
         const components = new ComponentsBuilder()
-            .setScreen({ title: 'HackerChat = Matheus Lima'})
+            .setScreen({ title: 'HackerChat - Erick Wendel' })
             .setLayoutComponent()
-            .setInputComponent(this.#onInputReceived(eventEmiter))
+            .setInputComponent(this.#onInputReceived(eventEmitter))
             .setChatComponent()
             .setActivityLogComponent()
             .setStatusComponent()
             .build()
 
-        this.#registerEvents(eventEmiter, components)
+        this.#registerEvents(eventEmitter, components)
 
         components.input.focus()
         components.screen.render()
-
-        // // setInterval(() => {
-        //     const users = ['matheus']
-        //     eventEmiter.emit(constants.events.app.STATUS_UPDATED, users)
-        //     users.push('1234')
-        //     eventEmiter.emit(constants.events.app.STATUS_UPDATED, users)
-        //     users.push('teste', 'teste2')
-        //     eventEmiter.emit(constants.events.app.STATUS_UPDATED, users)
-        //     users.push('aline', 'aline dois')
-        //     eventEmiter.emit(constants.events.app.STATUS_UPDATED, users)
-        // // }, 1000)
     }
 }
