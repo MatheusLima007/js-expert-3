@@ -1,6 +1,25 @@
+#!/usr/bin/env node
+
 /*
+
+    chmod +x index.js
+
+*/
+
+/*
+npm i -g @matheuslima007/hacker-chat-client
+
+npm unlink -g @matheuslima007/hacker-chat-client
+hacker-chat \
+    --username matheus \
+    --room sala01 
+
+./index.js \
+    --username matheus \
+    --room sala01 \
+
 node index.js \
-    --username erickwendel \
+    --username matheus \
     --room sala01 \
     --hostUri localhost
 */
